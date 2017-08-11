@@ -1,4 +1,5 @@
 import unittest
+import numpy
 
 from neuralnet import NeuralNet
 
@@ -20,20 +21,19 @@ class NeuralNetTest(unittest.TestCase):
                 layer = net_layers[i]
                 self.assertEqual(layer.return_amount_of_neurons(), design[i], i)
 
-    def calculate_layer_test(self):
-        net = NeuralNet([1, 3, 1], -1, 1)
+    def forward_prop_test(self):
+        net = NeuralNet([3, 3, 3], -1, 1)
         net_layers = net.return_net()
-        l = len(net_layers)
-        for i in range(l):
-            with self.subTest(name=i):
-                layer = net_layers[i]
-                matrix = layer.return_matrix()
-                print(matrix.shape)
-                res = net.calculate_layer(matrix, [1, 1])
-                z = res[1]
-                #print(i)
-                self.assertEqual(z.shape, (3,), i)
-
+        net_layers[0].set_matrix(numpy.array([[1, 1, 1, 1], [2, 2, 2, 2], [3, 3, 3, 3]]))
+        net_layers[1].set_matrix(numpy.array([[-1, 1, -1, 1], [-2, 2, -2, 2], [3, -3, 3, -3]]))
+        net.set_net(net_layers)
+        x = numpy.array([[0.5], [-0.5], [-0.7]])
+        res = net.forward_prop(x)
+        res_a = res[0]
+        a = res_a[len(res_a) - 1]
+        a = a[1:len(a)]
+        expected_res = numpy.array([[0.41089559], [0.3272766], [0.746644]])
+        self.assertEqual(a.all(), expected_res.all())
 
 if __name__ == 'main':
     unittest.main()

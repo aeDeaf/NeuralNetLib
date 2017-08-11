@@ -16,6 +16,8 @@ class NeuralLayer:
                 row.append(random.uniform(minimum, maximum))
             matrix.append(row)
         self.matrix = numpy.array(matrix)
+        if columns == 1:
+            self.matrix = numpy.reshape(self.matrix, (rows, 1))
 
     def return_matrix(self):
         return self.matrix
